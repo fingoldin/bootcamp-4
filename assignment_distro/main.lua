@@ -193,7 +193,7 @@ function love.update(dt)
             else
                 gridXCount = gridXCount + 1;
             end
-        elseif gridXCount < gridX and love.math.random() > 0.9 then
+        elseif gridXCount < gridX and love.math.random() > 0.2 then
             gridXCount = gridXCount + 1;
         end
     end
