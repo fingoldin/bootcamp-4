@@ -1,10 +1,14 @@
 gui = {}
-score = 0
-max_score = 0
 
 function love.load()
     gridXCount = 40;
     gridYCount = 25;
+    score = 0
+    max_score = 0
+    foodColors = {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}
+    foodValues = {1, 2, 3}
+    foodType = 1
+    toadd = 0
 
     love.window.setMode(40 * 15, 30 * 15);
     love.window.setTitle("Better Snake");
@@ -43,6 +47,7 @@ function love.load()
         end
 
         foodPosition = possibleFoodPositions[love.math.random(1, #possibleFoodPositions)]
+        foodType = love.math.random(1, #foodColors)
     end
 
     moveFood();
@@ -143,9 +148,14 @@ function love.update(dt)
 
                 if snakeSegments[1].x == foodPosition.x
                 and snakeSegments[1].y == foodPosition.y then
-                    score = score + 1
+                    score = score + foodValues[foodType]
                     updateBest();
                     moveFood();
+                    toadd = toadd + foodValues[foodType]
+                end
+
+                if toadd > 0 then
+                    toadd = toadd - 1
                 else
                     table.remove(snakeSegments);
                 end
@@ -181,7 +191,7 @@ function love.draw()
         drawCell(segment.x, segment.y); -- draw snake
     end
 
-    love.graphics.setColor(1, 0, 0); -- food colour
+    love.graphics.setColor(foodColors[foodType][1], foodColors[foodType][2], foodColors[foodType][3]); -- food colour
     drawCell(foodPosition.x, foodPosition.y);
     
     drawGUI();
