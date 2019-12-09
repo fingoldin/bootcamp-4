@@ -9,6 +9,8 @@ function love.load()
     foodValues = {1, 2, 3}
     foodType = 1
     toadd = 0
+    base_speed = 0.1
+    speed = base_speed
 
     love.window.setMode(40 * 15, 30 * 15);
     love.window.setTitle("Better Snake");
@@ -58,6 +60,10 @@ function love.load()
         end
     end
 
+    function updateSpeed()
+        speed = base_speed * math.pow(0.9, score)
+    end
+
     function reset()
         snakeSegments = {
             {x = 3, y = 4},
@@ -91,7 +97,7 @@ function love.update(dt)
            end
          
       
-        local timerLimit = 0.06; -- snake speed
+        local timerLimit = speed; -- snake speed
         if timer >= timerLimit then
             timer = timer - timerLimit;
 
@@ -151,6 +157,7 @@ function love.update(dt)
                     score = score + foodValues[foodType]
                     updateBest();
                     moveFood();
+                    updateSpeed();
                     toadd = toadd + foodValues[foodType]
                 end
 
