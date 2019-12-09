@@ -64,8 +64,12 @@ function love.load()
         end
     end
 
+    function sigmoid(x)
+        return 1 / (1 + math.exp(-x/3))
+    end
+
     function updateSpeed()
-        speed = base_speed * math.pow(0.9, score)
+      speed = base_speed * (1.6 - sigmoid(score))
     end
 
     function reset()
