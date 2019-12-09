@@ -1,8 +1,12 @@
 gui = {}
 
 function love.load()
-    gridXCount = 40;
-    gridYCount = 25;
+    gridX = 40
+    gridY = 25
+    max_snake_pos_x = 0;
+
+    gridXCount = gridX;
+    gridYCount = gridY;
     score = 0
     max_score = 0
     foodColors = {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}
@@ -34,9 +38,9 @@ function love.load()
                     if foodX == segment.x and foodY == segment.y then
                         possible = false;
                     end
-                    
+
                     -- this just makes sure the food random change is on the board and to make sure it doesn't spawn in the snake.
-                    
+
                     if (foodY < 4 or foodY > (30 * 15) - 45) then
                       possible = false;
                       end
@@ -65,12 +69,16 @@ function love.load()
     end
 
     function reset()
+
+        gridXCount = gridX;
+        gridYCount = gridY;
+
         snakeSegments = {
             {x = 3, y = 4},
             {x = 2, y = 4},
             {x = 1, y = 4},
         }
-        
+
         directionQueue = {'right'} -- the starting movement is right.
         snakeAlive = true;
         timer = 0;
@@ -79,7 +87,7 @@ function love.load()
         updateBest();
         score = 0;
 
-        moveFood();       
+        moveFood();
     end
 
     reset();
@@ -87,7 +95,7 @@ end
 
 function love.update(dt)
     timer = timer + dt;
-    
+
     gameTimer = gameTimer + dt;
 
     if snakeAlive then
@@ -95,8 +103,7 @@ function love.update(dt)
            gui.timer = gui.timer + 1;
            gameTimer = 0;
            end
-         
-      
+        
         local timerLimit = speed; -- snake speed
         if timer >= timerLimit then
             timer = timer - timerLimit;
@@ -114,23 +121,23 @@ function love.update(dt)
                     table.remove(snakeSegments);
                     snakeAlive = false;
                 end
-                
+
             elseif directionQueue[1] == 'left' then
                 nextXPosition = nextXPosition - 1;
                 if nextXPosition < 1 then
                     table.remove(snakeSegments);
                     snakeAlive = false;
                 end
-                
+
                 -- all this stuff is collision
-                
+
             elseif directionQueue[1] == 'down' then
                 nextYPosition = nextYPosition + 1;
                 if nextYPosition > (gridYCount + 3) then
                     table.remove(snakeSegments);
                     snakeAlive = false;
                 end
-                
+
             elseif directionQueue[1] == 'up' then
                 nextYPosition = nextYPosition - 1;
                 if nextYPosition < 4 then
@@ -143,7 +150,7 @@ function love.update(dt)
 
             for segmentIndex, segment in ipairs(snakeSegments) do
                 if segmentIndex ~= #snakeSegments
-                and nextXPosition == segment.x 
+                and nextXPosition == segment.x
                 and nextYPosition == segment.y then -- this stops the player going back on itself
                     canMove = false;
                 end
@@ -173,6 +180,16 @@ function love.update(dt)
     elseif timer >= 1.5 then
         reset(); -- when the snake dies, the timer stops. if the timer has stopped for 1.5 seconds, restart the game.
     end
+
+    max_snake_pos_x = 0;
+    for segmentIndex, segment in ipairs(snakeSegments) do
+      if max_snake_pos_x < segment.x then
+        max_snake_pos_x = segment.x
+      end
+    if gridXCount > max_snake_pos_x + 5 then
+      gridXCount = gridXCount - 1;
+    end
+    end
 end
 
 function createGameWindow()
@@ -200,7 +217,7 @@ function love.draw()
 
     love.graphics.setColor(foodColors[foodType][1], foodColors[foodType][2], foodColors[foodType][3]); -- food colour
     drawCell(foodPosition.x, foodPosition.y);
-    
+
     drawGUI();
 end
 
@@ -230,17 +247,17 @@ function love.keypressed(key)
 end
 
 function drawGUI()
-  
+
   love.graphics.setColor(1, 1, 1);
   font = love.graphics.newFont(28);
   love.graphics.setFont(font);
   love.graphics.print("- SNAKE -", 235, 5);
-  
+
   font = love.graphics.newFont(15); -- font size+
   love.graphics.setFont(font);
-  
+
   love.graphics.print("Score: " .. tostring(score), 50, 425);
   love.graphics.print("Timer: " .. tostring(0), 270, 425);
   love.graphics.print("Best Score: " .. tostring(max_score), 450, 425);
-  
+
   end
