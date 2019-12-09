@@ -103,7 +103,7 @@ function love.update(dt)
            gui.timer = gui.timer + 1;
            gameTimer = 0;
            end
-        
+
         local timerLimit = speed; -- snake speed
         if timer >= timerLimit then
             timer = timer - timerLimit;
@@ -180,15 +180,22 @@ function love.update(dt)
     elseif timer >= 1.5 then
         reset(); -- when the snake dies, the timer stops. if the timer has stopped for 1.5 seconds, restart the game.
     end
-
-    max_snake_pos_x = 0;
-    for segmentIndex, segment in ipairs(snakeSegments) do
-      if max_snake_pos_x < segment.x then
-        max_snake_pos_x = segment.x
-      end
-    if gridXCount > max_snake_pos_x + 5 then
-      gridXCount = gridXCount - 1;
-    end
+    if love.math.random() > 0.95 then
+        max_snake_pos_x = 0;
+        for segmentIndex, segment in ipairs(snakeSegments) do
+            if max_snake_pos_x < segment.x then
+                max_snake_pos_x = segment.x;
+            end
+        end
+        if gridXCount > max_snake_pos_x + 3 and gridXCount > 10 then
+            if love.math.random() >= 0.2 then
+                gridXCount = gridXCount - 1;
+            else
+                gridXCount = gridXCount + 1;
+            end
+        elseif gridXCount < gridX and love.math.random() > 0.9 then
+            gridXCount = gridXCount + 1;
+        end
     end
 end
 
