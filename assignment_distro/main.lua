@@ -1,4 +1,6 @@
 gui = {}
+score = 0
+max_score = 0
 
 function love.load()
     gridXCount = 40;
@@ -45,6 +47,12 @@ function love.load()
 
     moveFood();
 
+    function updateBest()
+        if score > max_score then
+          max_score = score
+        end
+    end
+
     function reset()
         snakeSegments = {
             {x = 3, y = 4},
@@ -57,6 +65,8 @@ function love.load()
         timer = 0;
         gui.timer = 0;
         gameTimer = 0;
+        updateBest();
+        score = 0;
 
         moveFood();       
     end
@@ -133,6 +143,8 @@ function love.update(dt)
 
                 if snakeSegments[1].x == foodPosition.x
                 and snakeSegments[1].y == foodPosition.y then
+                    score = score + 1
+                    updateBest();
                     moveFood();
                 else
                     table.remove(snakeSegments);
@@ -210,8 +222,8 @@ function drawGUI()
   font = love.graphics.newFont(15); -- font size+
   love.graphics.setFont(font);
   
-  love.graphics.print("Score: " .. tostring(0), 50, 425);
+  love.graphics.print("Score: " .. tostring(score), 50, 425);
   love.graphics.print("Timer: " .. tostring(0), 270, 425);
-  love.graphics.print("Best Score: " .. tostring(0), 450, 425);
+  love.graphics.print("Best Score: " .. tostring(max_score), 450, 425);
   
   end
