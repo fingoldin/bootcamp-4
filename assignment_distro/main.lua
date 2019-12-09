@@ -86,7 +86,7 @@ function love.load()
         gameTimer = 0;
         updateBest();
         score = 0;
-
+        speed = base_speed;
         moveFood();
     end
 
